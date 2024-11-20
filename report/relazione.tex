@@ -5,6 +5,13 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{minted}
+\usepackage{tcolorbox}
+
+\newcommand{\myexample}[2]{
+    \begin{tcolorbox}[colback=black!5!white,colframe=black,title={Esempio: #1}]
+        #2
+    \end{tcolorbox}
+}
 \graphicspath{{./images}}
 
 % Questo commentalo se vuoi scrivere in inglese.
@@ -27,12 +34,28 @@ Configurare VLAN, routing inter-VLAN, e verificare la connettività tra disposit
 \section{Consegne richieste}
 Documentazione della configurazione, spiegazione dei comandi utilizzati e cattura del traffico di rete per dimostrare la comunicazione tra le VLAN.
 \chapter{Progettazione}
-L'Università di Bologna e il Politecnico di Torino 
-La topologia di rete ideata è proposta nella figura \ref{fig:topologia_offline}. 
+I due campus dell'Università di Bologna, il Campus di Cesena e il Campus di Bologna sono costituiti da due dipartimenti: IT (Information Technology) e di ricerca.
+%
+Essi possiedono due edge router che possono scambiarsi informazioni per mezzo di una WAN (Wide Area Network), semplificato con un collegamento diretto.
+%
+Il traffico dei dipartimenti all'interno del singolo Campus vuole essere separato, mentre si vuole consentire la comunicazione inter-dipartimentale tra i due Campus.
+%
+\myexample{Ping tra i Campus}{
+    Scientifico Cesena Scientifico Bologna
+    %
+    Scientifico Cesena  IT Bologna
+}
+La topologia di rete è proposta nella figura \ref{fig:topologia_offline}. 
 \begin{figure}
-\includegraphics[width=\textwidth]{topology_offline.png}
-\caption{Topologia offline}
+\includegraphics[width=\textwidth]{offline_topology_with_departments.png}
+\caption{
+    Topologia di rete dei dipartimenti di IT e ricerca tra il Campus di Cesena e Bologna.
+    %
+    I triangolini rossi sui collegamenti indicano che il link è offline.
+    }
 \label{fig:topologia_offline}
 \end{figure}
 \chapter{Configurazione}
+Partendo dalla configurazione interna al Campus, è necessario stabilire gli indirizzi IP per i computer e per l'interfaccia router.
+
 \end{document}
