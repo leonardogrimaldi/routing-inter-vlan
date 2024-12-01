@@ -6,6 +6,7 @@
 \usepackage{hyperref}
 \usepackage{minted}
 \usepackage{tcolorbox}
+\usepackage{booktabs}
 
 \newcommand{\myexample}[2]{
     \begin{tcolorbox}[colback=black!5!white,colframe=black,title={Esempio: #1}]
@@ -56,6 +57,31 @@ La topologia di rete è proposta nella figura \ref{fig:topologia_offline}.
 \label{fig:topologia_offline}
 \end{figure}
 \chapter{Configurazione}
-Partendo dalla configurazione interna al Campus, è necessario stabilire gli indirizzi IP per i computer e per l'interfaccia router.
-
+\section{Pianificazione}
+Innanzitutto, è necessario stabilire gli indirizzi IP per i computer e per le interfacce dei router.
+\begin{table}[]
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Dispositivo & Interfaccia & Indirizzo IP & Subnet & Gateway \\ \midrule
+Router0 & Gig0/0 & 10.0.0.1 & 255.255.255.0 & 10.0.0.1 \\
+Router0 & Gig0/1 & 13.0.0.1 & 255.255.255.252 & N/A \\
+PC0 & Fa0 & 10.0.1.2 & 255.255.255.0 & 10.0.1.1 \\
+PC1 & Fa0 & 10.0.2.2 & 255.255.255.0 & 10.0.2.1 \\ \bottomrule
+\end{tabular}
+\caption{Configurazione rete Campus di Cesena}
+\label{table:1}
+\end{table}
+\begin{table}[]
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Dispositivo & Interfaccia & Indirizzo IP & Subnet & Gateway \\ \midrule
+Router1 & Gig0/1 &  &  &  \\
+Router1 &  &  &  &  \\
+PC2 & Fa0 &  &  &  \\
+PC3 & Fa0 &  &  &  \\ \bottomrule
+\end{tabular}
+\caption{Configurazione rete Campus di Bologna}
+\label{table:2}
+\end{table}
+https://networklessons.com/switching/intervlan-routing
 \end{document}
