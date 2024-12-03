@@ -287,10 +287,34 @@ Router0(config-subif)#
 \end{minted}
 Ora i due computer possono raggiungere il router, ma abbiamo creato un nuovo problema: \texttt{le due VLAN riescono a parlarsi}
 \subsection{Disabilitare il routing inter-VLAN}
+\subsection{Abilitare la comunicazione tra Router0 e Router1}
+Questa parte è molto semplice: basta seguire la tabella \ref{table:config_cesena} e \ref{table:config_bologna} per assegnare gli ip alle interfacce.
+Di seguito la configurazione del Router0:
+\begin{minted}{text}
+Router0(config)#int Gig0/1
+Router0(config-if)#ip addr 22.0.0.1 255.255.255.252
+Router0(config-if)#no shut
+\end{minted}
+Successivamente, la configurazione del Router1:
+\begin{minted}{text}
+Router1(config)#int Gig0/1
+Router1(config-if)#ip addr 22.0.0.2 255.255.255.252
+Router1(config-if)#no shut
+\end{minted}
+\subsection{Assegnare le rotte statiche per abilitare la  comunicazione tra gli stessi dipartimenti}
+\begin{minted}{text}
+Router0(config)#ip route 13.0.3.0 255.255.255.0 22.0.0.2
+Router0(config)#ip route 13.0.4.0 255.255.255.0 22.0.0.2
+\end{minted}
+\begin{minted}{text}
+Router1(config)#ip route 10.0.1.0 255.255.255.0 22.0.0.1
+Router1(config)#ip route 10.0.2.0 255.255.255.0 22.0.0.1
+\end{minted}
 \chapter{Testing}
 \label{chap:testing}
 \section{Riferimenti}
 https://computernetworking747640215.wordpress.com/2018/07/05/vlan-configuration-on-a-cisco-switch-in-packet-tracer/
 %
-https://networklessons.com/switching/intervlan-routing#SVI_Switch_Virtual_Interface
+% https://networklessons.com/switching/intervlan-routing#SVI_Switch_Virtual_Interface
+% https://www.practicalnetworking.net/stand-alone/routing-between-vlans/
 \end{document}
