@@ -48,7 +48,7 @@ Il traffico dei dipartimenti all'interno del singolo Campus vuole essere separat
     Scientifico Cesena  IT Bologna
 }
 La topologia di rete è proposta nella figura \ref{fig:topologia_offline}. 
-\begin{figure}
+\begin{figure}[H]
 \includegraphics[width=\textwidth]{offline_topology_with_departments.png}
 \caption{
     Topologia di rete dei dipartimenti di IT e ricerca tra il Campus di Cesena e Bologna.
@@ -72,8 +72,8 @@ In ogni caso, si può sempre far riferimento al manuale utilizzando il comando \
 %
 Sarà cura del lettore documentarsi e trovare il comando corrispondente.
 \section{Pianificazione}
-Innanzitutto, è necessario stabilire gli indirizzi IP per i computer e per le interfacce dei router.
-\begin{table}[]
+\subsection{Stabilire gli indirizzi IP per i dispositivi nella rete}
+\begin{table}[H]
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Dispositivo & Interfaccia & Indirizzo IP & Subnet & Gateway \\ \midrule
@@ -85,7 +85,7 @@ PC1 & Fa0 & 10.0.2.2 & 255.255.255.0 & 10.0.2.1 \\ \bottomrule
 \caption{Configurazione rete Campus di Cesena}
 \label{table:config_cesena}
 \end{table}
-\begin{table}[]
+\begin{table}[H]
 \begin{tabular}{lllll}
 \hline
 Dispositivo & Interfaccia & Indirizzo IP & Subnet & Gateway \\ \hline
@@ -97,7 +97,7 @@ PC4 & Fa0 & 13.0.4.2 & 255.255.255.0 & 13.0.4.1 \\ \hline
 \caption{Configurazione rete Campus di Bologna}
 \label{table:config_bologna}
 \end{table}
-\begin{table}[]
+\begin{table}[H]
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Dispositivo & Campus & Dipartimento & VLAN & Nome VLAN \\ \midrule
@@ -109,6 +109,41 @@ PC4 & Bologna & Ricerca & 40 & Ricerca\_Bologna \\ \bottomrule
 \caption{Ripartizione delle VLAN}
 \label{table:vlan_division}
 \end{table}
+\begin{table}[H]
+\begin{tabular}{@{}llllll@{}}
+\toprule
+Numero ACL & permit/deny & Source & Wildcard & Destination & Wildcard \\ \midrule
+103 & permit & 13.0.3.0 & 0.0.0.255 & 10.0.1.0 & 0.0.0.255 \\
+104 & permit & 13.0.4.0 & 0.0.0.255 & 10.0.2.0 & 0.0.0.255 \\ \bottomrule
+\end{tabular}
+\caption{Access list (ACL) da creare sul Router0 per separare il traffico che arriva dal campus di Bologna}
+\label{table:access_list_router1}
+\end{table}
+\begin{table}[H]
+\begin{tabular}{@{}llllll@{}}
+\toprule
+Numero ACL & permit/deny & Source & Wildcard & Destination & Wildcard \\ \midrule
+101 & permit & 10.0.1.0 & 0.0.0.255 & 13.0.3.0 & 0.0.0.255 \\
+102 & permit & 10.0.2.0 & 0.0.0.255 & 13.0.4.0 & 0.0.0.255 \\ \bottomrule
+\end{tabular}
+\caption{Access list (ACL) da creare sul Router1 per separare il traffico che arriva dal campus di Cesena}
+\label{table:access_list_router0}
+\end{table}
+\begin{table}[H]
+\begin{tabular}{@{}llll@{}}
+\toprule
+Dispositivo & Interfaccia & Numero ACL & in/out \\ \midrule
+Router0 & Gig0/0.10 & 103 & out \\
+Router0 & Gig0/0.20 & 104 & out \\
+Router1 & Gig0/0.30 & 101 & out \\
+Router1 & Gig0/0.40 & 102 & out \\ \bottomrule
+\end{tabular}
+\caption{Assegnazione ACL alle interfacce}
+\label{table:access_group}
+\end{table}
+Una domanda importante da chiedersi è se bisogna utilizzare la keyword \textit{in} oppure \textit{out}.
+%
+Un modo facile per capire quale regola utilizzare è descritta nel paragrafo riportato di seguito, preso da \href{https://www.reddit.com/r/ccna/comments/5x39ow/confused_on_the_difference_between_inout_standard/deexypo/}{questo post} su reddit: \textit{Stand up. You are the router. Your left arm and right arm are different networks. Inbound means traffic entering your arm and outbound means traffic leaving out your arm.}
 \section{Switch}
 Inizialmente si configura lo switch della rete interna.
 %
@@ -138,7 +173,7 @@ Switch0#
 \end{minted}
 Come procedura operativa standard, ci assicureremo sempre di salvare la configurazione dopo ogni cambiamento importante. 
 \subsection{Creazione VLAN}
-\begin{figure}
+\begin{figure}[H]
 \includegraphics[]{configurazione_switch.png}
 \caption{Switch interno della rete del campus di Cesena}
 \label{fig:switch_cesena}
@@ -178,7 +213,7 @@ Switch0# copy ru st
 Per le interfacce collegate ai singoli dipartimenti sarà necessario usare la modalità \textbf{access} per dire allo switch che su quel link scorre esclusivamente traffico di una singola VLAN.
 %
 Inoltre, si dovrà assegnare l'interfaccia alla VLAN adeguata.
-\begin{minted}{text}
+\begin{minted}[breaklines]{text}
 Switch0(config)#int vlan 10
 Switch0(config-if)#ip addr 10.0.1.2 255.255.255.0
 Switch0(config)#int Fa0/1
@@ -210,12 +245,12 @@ Questa parte di configurazione è la più breve e semplice; basta assegnare i gi
 Come accennato a inizio capitolo, verrà usata la interfaccia grafica di Cisco, ma nel mondo reale i PC avranno un loro sistema operativo dal quale si potrà assegnare l'IP, o ancora meglio, nella rete vi sarà un server DHCP che automatizza il processo.
 %
 Di seguito è riportato un estratto della configurazione statica del PC1 nella rete di Cesena.
-\begin{figure}
+\begin{figure}[H]
 \includegraphics[]{pc1_gateway_config.png}
 \caption{Configurazione gateway PC1}
 \label{fig:pc1_gateway_config}
 \end{figure}
-\begin{figure}
+\begin{figure}[H]
 \includegraphics[]{pc1_ip_config.png}
 \caption{Configurazione IP PC1}
 \label{fig:pc1_ip_config}
@@ -231,8 +266,8 @@ Proseguendo, ci si aspetta che la comunicazione tra la VLAN 10 e VLAN 20 non sia
 Ovviamente questo sarebbe il comportamento corretto rispetto alle specifiche del capitolo \nameref{chap:progettazione}, dato che i due dipartimenti differenti non possono comunicare.
 %
 Per eseguire il test si apre il terminale del PC1 e si esegue un ping verso l'IP \texttt{10.0.2.3}
-\begin{figure}
-\includegraphics[]{pc1_test_vlan_differenti.png}
+\begin{figure}[H]
+\includegraphics{pc1_test_vlan_differenti.png}
 \caption{Esecuzione ping 10.0.2.3 sul PC1 con conseguente fallimento}
 \label{fig:pc1_test_vlan_differenti}
 \end{figure}
@@ -251,7 +286,7 @@ Sull'interfaccia Gig0/0 del Router0 passa il traffico VLAN10 e VLAN20 ed e quind
 In partenza si accende l'interfaccia Gig0/0 con \texttt{no shut} e poi si configurano le \textit{sub interfaces} Gig0/0.10 e Gig/0.20 (come da tabella \ref{table:config_cesena}).
 %
 Si usa il comando \texttt{encapsulation dot1q \textit{numero\_vlan}} per dire al router di usare il tagging VLAN e abilitare il routing delle VLAN.
-\begin{minted}{text}
+\begin{minted}[breaklines]{text}
 Router0(config)#int Gig0/0
 Router0(config-if)#no shut
 
@@ -301,7 +336,7 @@ Router1(config)#int Gig0/1
 Router1(config-if)#ip addr 22.0.0.2 255.255.255.252
 Router1(config-if)#no shut
 \end{minted}
-\subsection{Assegnare le rotte statiche per abilitare la  comunicazione tra gli stessi dipartimenti}
+\subsection{Assegnare le rotte statiche per abilitare la punto-punto}
 \begin{minted}{text}
 Router0(config)#ip route 13.0.3.0 255.255.255.0 22.0.0.2
 Router0(config)#ip route 13.0.4.0 255.255.255.0 22.0.0.2
@@ -310,6 +345,31 @@ Router0(config)#ip route 13.0.4.0 255.255.255.0 22.0.0.2
 Router1(config)#ip route 10.0.1.0 255.255.255.0 22.0.0.1
 Router1(config)#ip route 10.0.2.0 255.255.255.0 22.0.0.1
 \end{minted}
+\section{Creazione delle ACL sui Router}
+\begin{minted}[breaklines]{text}
+Router0(config)#access-list 103 permit ip 13.0.3.0 0.0.0.255 10.0.1.0 0.0.0.255
+Router0(config)#access-list 104 permit ip 13.0.4.0 0.0.0.255 10.0.2.0 0.0.0.255
+\end{minted}
+\begin{minted}[breaklines]{text}
+Router1(config)#access-list 101 permit ip 10.0.1.0 0.0.0.255 13.0.3.0 0.0.0.255
+Router1(config)#access-list 102 permit ip 10.0.2.0 0.0.0.255 13.0.4.0 0.0.0.255
+\end{minted}
+\subsection{Assegnazione Access list}
+\begin{minted}{text}
+Router0(config)#int Gig0/0.10
+Router0(config-subif)#ip access-group 103 out
+Router0(config-subif)#exit
+Router0(config)#int Gig0/0.20
+Router0(config-subif)#no ip access-group 104 in
+Router0(config-subif)#ip access-group 104 out    
+\end{minted}
+\begin{minted}{text}
+Router1(config)#int Gig0/0.30
+Router1(config-subif)#ip access-group 101 out
+Router1(config-subif)#exit
+Router1(config)#int Gig0/0.40
+Router1(config-subif)#ip access-group 102 out
+\end{minted}
 \chapter{Testing}
 \label{chap:testing}
 \section{Riferimenti}
@@ -317,4 +377,6 @@ https://computernetworking747640215.wordpress.com/2018/07/05/vlan-configuration-
 %
 % https://networklessons.com/switching/intervlan-routing#SVI_Switch_Virtual_Interface
 % https://www.practicalnetworking.net/stand-alone/routing-between-vlans/
+% https://www.cisco.com/c/it_it/support/docs/ip/access-lists/26448-ACLsamples.html#toc-hId--1588884728
+
 \end{document}
