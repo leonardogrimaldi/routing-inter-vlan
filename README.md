@@ -1,6 +1,6 @@
 # routing-inter-vlan
 
-**La relazione finale si trova nella cartella ./report/relazione.pdf**
+**La relazione finale si trova nella cartella ./report/relazione.pdf** oppure nella tab releases.
 
 ## Traccia numero 1:
 ### Progetto GNS3: Configurazione di una Rete con VLAN e Routing Inter-VLAN
