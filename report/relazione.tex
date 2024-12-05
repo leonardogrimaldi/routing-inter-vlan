@@ -53,20 +53,6 @@ La topologia di rete è proposta nella figura \ref{fig:topologia_offline}.
 \label{fig:topologia_offline}
 Per capire il comportamento desiderato della rete in figura \ref{fig:topologia_offline} si prenda per esempio il dipartimento IT di Cesena: esso non potrà comunicare con il dipartimento di ricerca né di Cesena né di Bologna, ma potrà comunicare con il dipartimento IT di Bologna.
 \end{figure}
-\chapter{Configurazione}
-Si assume che tutti i dispositivi siano accesi e le configurazioni siano effettuate tramite il terminale del dispositivo scelto.
-%
-Nel caso dei Personal Computer verrà utilizzata l'interfaccia grafica di Cisco Packet Tracer, pur sapendo che nel mondo reale i computer hanno un sistema operativo e le proprie modalità di configurazione.
-%
-\\Si nota inoltre che ogni comando Cisco si può abbreviare e nelle successive schermate \mintinline{text}|configure terminal|, come altri comandi, potrebbe diventare \mintinline{text}|conf t|.
-%
-Qualora il lettore non conoscesse la keyword completa del comando, si raccomanda di scrivere il comando abbreviato e premere il tasto \texttt{Tab} per mostrare la forma completa.
-%
-In ogni caso, si può sempre far riferimento al manuale utilizzando il comando \texttt{?}, oppure consultare un \href{https://www.websentra.com/cisco-commands-cheat-sheet/}{cheat sheet} online.
-%
-\\È altresì importante ricordare che i comandi dei dispositivi Cisco fisici non coincidono necessariamente con quelli di Cisco Packet Tracer.
-%
-Sarà cura del lettore documentarsi e trovare il comando corrispondente.
 \section{Pianificazione}
 Di seguito sono riportate le tabelle da usare come riferimento durante la configurazione su Cisco Packet Tracer.
 \subsection{Indirizzi IP delle interfacce per i dispositivi nella rete}
@@ -151,6 +137,20 @@ Router1 & Gig0/0.40 & 102 & out \\ \bottomrule
 Una domanda importante da chiedersi è se bisogna utilizzare la keyword \textit{in} oppure \textit{out}.
 %
 Un modo facile per capire quale regola utilizzare è descritta nel paragrafo riportato di seguito, preso da \href{https://www.reddit.com/r/ccna/comments/5x39ow/confused_on_the_difference_between_inout_standard/deexypo/}{questo post} su reddit: \textit{Stand up. You are the router. Your left arm and right arm are different networks. Inbound means traffic entering your arm and outbound means traffic leaving out your arm.}
+\chapter{Configurazione}
+Si assume che tutti i dispositivi siano accesi e le configurazioni siano effettuate tramite il terminale del dispositivo scelto.
+%
+Nel caso dei Personal Computer verrà utilizzata l'interfaccia grafica di Cisco Packet Tracer, pur sapendo che nel mondo reale i computer hanno un sistema operativo e le proprie modalità di configurazione.
+%
+\\Si nota inoltre che ogni comando Cisco si può abbreviare e nelle successive schermate \mintinline{text}|configure terminal|, come altri comandi, potrebbe diventare \mintinline{text}|conf t|.
+%
+Qualora il lettore non conoscesse la keyword completa del comando, si raccomanda di scrivere il comando abbreviato e premere il tasto \texttt{Tab} per mostrare la forma completa.
+%
+In ogni caso, si può sempre far riferimento al manuale utilizzando il comando \texttt{?}, oppure consultare un \href{https://www.websentra.com/cisco-commands-cheat-sheet/}{cheat sheet} online.
+%
+\\È altresì importante ricordare che i comandi dei dispositivi Cisco fisici non coincidono necessariamente con quelli di Cisco Packet Tracer.
+%
+Sarà cura del lettore documentarsi e trovare il comando corrispondente.
 \section{Switch}
 Inizialmente si configura lo switch della rete interna.
 %
