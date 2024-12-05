@@ -280,7 +280,7 @@ Per eseguire il test si apre il terminale del PC1 e si esegue un ping verso l'IP
 \end{figure}
 Come si può vedere dalla figura \ref{fig:pc1_test_vlan_differenti} il ping non è andato a buon fine.
 \section{Router}
-La parte finale è più complessa prevede la configurazione dei due edge router delle nostre reti.
+La parte finale e più complessa prevede la configurazione dei due edge router delle nostre reti.
 %
 Prima di tutto, si dovranno configurare le interfacce interne (quelle collegate allo switch), in modo da consentire i pacchetti dei PC di passare attraverso il trunk: $$switch \longleftrightarrow router$$
 %
@@ -327,8 +327,9 @@ Router0(config-subif)#ip add 10.0.2.1 255.255.255.0
 Router0(config-subif)#no shut
 Router0(config-subif)#
 \end{minted}
-Ora i due computer possono raggiungere il router, ma abbiamo creato un nuovo problema: \texttt{le due VLAN riescono a parlarsi}
-\subsection{Disabilitare il routing inter-VLAN}
+Ora i due computer possono raggiungere il router, ma abbiamo creato un nuovo problema: \textbf{le due VLAN interne riescono a parlarsi}.
+%
+Questo problema verrà risolto nella sezione \ref{sssec:creazione_acl} e \ref{sssec:assegnazione_acl} con l'utilizzo delle Access List sui router. 
 \subsection{Abilitare la comunicazione tra Router0 e Router1}
 Questa parte è molto semplice: basta seguire la tabella \ref{table:config_cesena} e \ref{table:config_bologna} per assegnare gli ip alle interfacce.
 Di seguito la configurazione del Router0:
@@ -352,7 +353,8 @@ Router0(config)#ip route 13.0.4.0 255.255.255.0 22.0.0.2
 Router1(config)#ip route 10.0.1.0 255.255.255.0 22.0.0.1
 Router1(config)#ip route 10.0.2.0 255.255.255.0 22.0.0.1
 \end{minted}
-\section{Creazione delle ACL sui Router}
+\subsection{Creazione delle ACL sui Router}
+\label{sssec:creazione_acl}
 \begin{minted}[breaklines]{text}
 Router0(config)#access-list 103 permit ip 13.0.3.0 0.0.0.255 10.0.1.0 0.0.0.255
 Router0(config)#access-list 104 permit ip 13.0.4.0 0.0.0.255 10.0.2.0 0.0.0.255
@@ -362,6 +364,7 @@ Router1(config)#access-list 101 permit ip 10.0.1.0 0.0.0.255 13.0.3.0 0.0.0.255
 Router1(config)#access-list 102 permit ip 10.0.2.0 0.0.0.255 13.0.4.0 0.0.0.255
 \end{minted}
 \subsection{Assegnazione Access list}
+\label{sssec:assegnazione_acl}
 \begin{minted}{text}
 Router0(config)#int Gig0/0.10
 Router0(config-subif)#ip access-group 103 out
