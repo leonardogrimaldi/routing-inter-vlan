@@ -38,15 +38,10 @@ Documentazione della configurazione, spiegazione dei comandi utilizzati e cattur
 \label{chap:progettazione}
 I due campus dell'Università di Bologna, il Campus di Cesena e il Campus di Bologna sono costituiti da due dipartimenti: IT (Information Technology) e di ricerca.
 %
-Essi possiedono due edge router che possono scambiarsi informazioni per mezzo di una WAN (Wide Area Network), semplificato con un collegamento diretto.
+Essi possiedono due edge router che possono scambiarsi informazioni per mezzo di una WAN (Wide Area Network), semplificata con un collegamento diretto.
 %
 Il traffico dei dipartimenti all'interno del singolo Campus vuole essere separato, mentre si vuole consentire la comunicazione inter-dipartimentale tra i due Campus.
 %
-\myexample{Ping tra i Campus}{
-    Scientifico Cesena Scientifico Bologna
-    %
-    Scientifico Cesena  IT Bologna
-}
 La topologia di rete è proposta nella figura \ref{fig:topologia_offline}. 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{offline_topology_with_departments.png}
@@ -56,6 +51,7 @@ La topologia di rete è proposta nella figura \ref{fig:topologia_offline}.
     I triangolini rossi sui collegamenti indicano che il link è offline.
     }
 \label{fig:topologia_offline}
+Per capire il comportamento desiderato della rete in figura \ref{fig:topologia_offline} si prenda per esempio il dipartimento IT di Cesena: esso non potrà comunicare con il dipartimento di ricerca né di Cesena né di Bologna, ma potrà comunicare con il dipartimento IT di Bologna.
 \end{figure}
 \chapter{Configurazione}
 Si assume che tutti i dispositivi siano accesi e le configurazioni siano effettuate tramite il terminale del dispositivo scelto.
@@ -72,13 +68,18 @@ In ogni caso, si può sempre far riferimento al manuale utilizzando il comando \
 %
 Sarà cura del lettore documentarsi e trovare il comando corrispondente.
 \section{Pianificazione}
-\subsection{Stabilire gli indirizzi IP per i dispositivi nella rete}
+Di seguito sono riportate le tabelle da usare come riferimento durante la configurazione su Cisco Packet Tracer.
+\subsection{Indirizzi IP delle interfacce per i dispositivi nella rete}
+Per prima cosa occorre stabilire gli indirizzi IP e a quali interfacce assegnarli.
 \begin{table}[H]
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Dispositivo & Interfaccia & Indirizzo IP & Subnet & Gateway \\ \midrule
-Router0 & Gig0/0 & 10.0.0.1 & 255.255.255.0 & 10.0.0.1 \\
-Router0 & Gig0/1 & 13.0.0.1 & 255.255.255.252 & N/A \\
+Router0 & Gig0/0.10 & 10.0.1.1 & 255.255.255.0 & 10.0.1.1 \\
+Router0 & Gig0/0.20 & 10.0.2.1 & 255.255.255.0 & 10.0.2.1 \\
+Router0 & Gig0/1 & 22.0.0.1 & 255.255.255.252 & N/A \\
+Switch0 & Fa0/1 & 10.0.1.2 & 255.255.255.0 & 10.0.1.1 \\
+Switch0 & Fa0/2 & 10.0.2.2 & 255.255.255.0 & 10.0.2.1 \\
 PC0 & Fa0 & 10.0.1.2 & 255.255.255.0 & 10.0.1.1 \\
 PC1 & Fa0 & 10.0.2.2 & 255.255.255.0 & 10.0.2.1 \\ \bottomrule
 \end{tabular}
@@ -91,12 +92,16 @@ PC1 & Fa0 & 10.0.2.2 & 255.255.255.0 & 10.0.2.1 \\ \bottomrule
 Dispositivo & Interfaccia & Indirizzo IP & Subnet & Gateway \\ \hline
 Router1 & Gig0/0.30 & 13.0.3.1 & 255.255.255.0 & 13.0.3.1 \\
 Router1 & Gig0/0.40 & 13.0.4.1 & 255.255.255.0 & 13.0.4.1 \\
+Router1 & Gig0/1 & 22.0.0.2 & 255.255.255.252 & N/A \\
+Switch1 & Fa0/1 & 13.0.3.2 & 255.255.255.0 & 13.0.3.1 \\
+Switch1 & Fa0/2 & 13.0.4.2 & 255.255.255.0 & 13.0.4.1 \\
 PC3 & Fa0 & 13.0.3.2 & 255.255.255.0 & 13.0.3.1 \\
 PC4 & Fa0 & 13.0.4.2 & 255.255.255.0 & 13.0.4.1 \\ \hline
 \end{tabular}
 \caption{Configurazione rete Campus di Bologna}
 \label{table:config_bologna}
 \end{table}
+\subsection{VLAN da creare sugli Switch}
 \begin{table}[H]
 \begin{tabular}{@{}lllll@{}}
 \toprule
@@ -109,6 +114,8 @@ PC4 & Bologna & Ricerca & 40 & Ricerca\_Bologna \\ \bottomrule
 \caption{Ripartizione delle VLAN}
 \label{table:vlan_division}
 \end{table}
+\subsection{ACL per la separazione traffico interVLAN}
+Per impedire a due dipartimenti differenti di scambiarsi dati è necessario creare le ACL elencate di seguito sui router.
 \begin{table}[H]
 \begin{tabular}{@{}llllll@{}}
 \toprule
@@ -372,11 +379,33 @@ Router1(config-subif)#ip access-group 102 out
 \end{minted}
 \chapter{Testing}
 \label{chap:testing}
-\section{Riferimenti}
-https://computernetworking747640215.wordpress.com/2018/07/05/vlan-configuration-on-a-cisco-switch-in-packet-tracer/
+Ora che la rete è stata completata occorre eseguire una fase di testing per accertarne il suo corretto funzionamento.
 %
-% https://networklessons.com/switching/intervlan-routing#SVI_Switch_Virtual_Interface
-% https://www.practicalnetworking.net/stand-alone/routing-between-vlans/
-% https://www.cisco.com/c/it_it/support/docs/ip/access-lists/26448-ACLsamples.html#toc-hId--1588884728
-
+Il testing verrà fatto con i ping; è importante ricordare però che le prime volte potrebbero fallire per via dell'aggiornamento delle tabelle ARP (Address Resolution Protocol).
+%
+In alcuni casi sarà necessario esseguire più volte il ping per verificare che il link funzioni funzioni oppure no.
+%
+\\Di seguito sono riportate alcune immagini dei ping eseguiti.
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{pc1_pc3_ping_successful.png}
+\caption{Ping dal PC1 verso PC3 con il percorso nel pannello a destra}
+\label{fig:pc3_ping_successful}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\textheight, angle=-90,origin=c]{pc1_pc4_ping_fail.png}
+\caption{Ping dal PC1 (Dipartimento IT) verso PC4 (Dipartimento Ricerca)}
+\label{fig:pc1_pc4_ping_fail}
+\end{figure}
+\begin{figure}[H]
+\includegraphics{pc4_ping.png}
+\caption{Ping dal PC4 verso PC1 e successivamente PC2. È possibile notare come al primo tentativo fallisca per colpa dell'ARP e in seguito ha successo. Il ping verso PC2 non dà riscontro}
+\label{fig:pc4_ping}
+\end{figure}
+\chapter{Riferimenti}
+\begin{itemize}
+    \item \url{https://computernetworking747640215.wordpress.com/2018/07/05/vlan-configuration-on-a-cisco-switch-in-packet-tracer/}
+    \item \url{https://networklessons.com/switching/intervlan-routing#SVI_Switch_Virtual_Interface}
+    \item \url{https://www.practicalnetworking.net/stand-alone/routing-between-vlans/}
+    \item \url{https://www.cisco.com/c/it_it/support/docs/ip/access-lists/26448-ACLsamples.html#toc-hId--1588884728}
+\end{itemize}
 \end{document}
